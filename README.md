@@ -104,7 +104,7 @@ method/method.py
 ### Output
 
 For each trajectory:
-- `*_rag_results.csv` containing:
+- `results.csv` containing:
   - `GeneratedAnswer`
   - `Sub_Answers`
   - `RetrievedIndices`
