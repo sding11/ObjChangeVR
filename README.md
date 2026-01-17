@@ -9,6 +9,10 @@ Unlike traditional 3D-QA settings, ObjChangeVR operates on **continuous VR traje
 
 ## Outline
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sding11/ObjChangeVR/blob/main/Task.jpg" width="95%">
+</p>
+
 - `dataset_construction/`  
   Unity-based data export and QA benchmark generation.
 
