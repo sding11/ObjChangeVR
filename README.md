@@ -84,7 +84,7 @@ dataset_construction/export_unity/
 
 ### QA Benchmark Generation
 
-Generate QA pairs using GPT-Vision:
+Generate QA pairs using VLM:
 
 ```bash
 python dataset_construction/generate_qa.py
