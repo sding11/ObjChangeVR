@@ -25,15 +25,20 @@ All code assumes the following **fixed dataset layout**:
 ```
 dataset/
 ├── architecture/
-│   ├── 0/
+│   ├── 1/
+│   │   ├── compressed/
+│   │   ├── disappear_object/
+│   │   ├── path/
 │   │   ├── screenshot/
 │   │   │   ├── data.csv
 │   │   │   ├── after/
+│   │   │   ├── before/
 │   │   │   └── compressed/
 │   │   ├── groundtruth/
 │   │   │   ├── data.csv
+│   │   │   ├── before/
 │   │   └── └── after/
-│   ├── 1/
+│   ├── 2/
 │   └── ...
 ├── fastfood/
 ├── market/
