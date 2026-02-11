@@ -1,7 +1,6 @@
 # ObjChangeVR
 
-This repository accompanies the paper **“ObjChangeVR: Object State Change Reasoning from Continuous Egocentric Views in VR Environments”** to appear at EACL 2026.  
-The code implements the complete ObjChangeVR pipeline, including **dataset construction**, **object change reasoning**, and **evaluation**.
+This repository accompanies the paper **“ObjChangeVR: Object State Change Reasoning from Continuous Egocentric Views in VR Environments”** to appear at EACL 2026. The code implements the complete ObjChangeVR pipeline, including dataset construction, object change reasoning, and evaluation.
 
 ---
 
