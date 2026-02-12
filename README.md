@@ -6,10 +6,11 @@ This repository accompanies the paper **“ObjChangeVR: Object State Change Reas
 
 ## Outline
 
-![Task](Task.jpg)
+<img src="Task.jpg" width="600">
 
 
-- `dataset_construction/`  
+* [I. ObjChangeVR-Dataset](#1)
+  
   Unity-based data export and QA benchmark generation.
 
 - `method/`  
@@ -18,9 +19,11 @@ This repository accompanies the paper **“ObjChangeVR: Object State Change Reas
 ---
 
 
-## Dataset Organization
+## ObjChangeVR-Dataset <span id="1">
 
-All code assumes the following **fixed dataset layout**:
+The dataset can be downloaded [**here**]()
+
+All code assumes the following **dataset layout**:
 
 ```
 dataset/
@@ -49,8 +52,6 @@ dataset/
 - Each **numeric folder** represents a **single independent trajectory**.
 
 ---
-
-## Dataset Construction
 
 ### Unity Export
 
