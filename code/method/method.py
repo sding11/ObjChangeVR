@@ -225,16 +225,16 @@ def generate_rag_results_for_folder(folder_path, gpt, qa_df):
     folder_name = os.path.basename(folder_path)
     screenshot_path = os.path.join(folder_path, "screenshot")
     compressed_path = os.path.join(screenshot_path, "compressed")
-    gt_csv = os.path.join(folder_path, "groundtruth", "data.csv")
+    os.makedirs(compressed_path, exist_ok=True)
+
     scene_csv = os.path.join(screenshot_path, "data.csv")
     rag_out_path = os.path.join(folder_path, "results.csv")
 
     if os.path.exists(rag_out_path):
         return
-    if not all(os.path.exists(p) for p in [gt_csv, scene_csv]):
+    if not os.path.exists(scene_csv):
         return
 
-    gt_df = pd.read_csv(gt_csv)
     scene_df = pd.read_csv(scene_csv)
     qa_df = qa_df[qa_df["Folder"].astype(str) == folder_name]
     if MAX_QA is not None:
@@ -263,11 +263,11 @@ def generate_rag_results_for_folder(folder_path, gpt, qa_df):
     rag_records = []
 
     for i, (_, row) in enumerate(qa_df.iterrows()):
-        img_name = row["Image"]
+        img_name = row["SC_Image"]
         question = row["Question"]
         answer = row["Answer"]
 
-        match = gt_df[gt_df["ScreenshotFilename"] == img_name]
+        match = scene_df[scene_df["ScreenshotFilename"] == img_name]
         if match.empty:
             continue
 
