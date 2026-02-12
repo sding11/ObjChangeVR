@@ -27,7 +27,7 @@ All code assumes the following **dataset layout**:
 
 ```
 dataset/
-├── architecture/
+├── villaInterior/
 │   ├── 1/
 │   │   ├── compressed/
 │   │   ├── disappear_object/
@@ -43,7 +43,7 @@ dataset/
 │   │   └── └── after/
 │   ├── 2/
 │   └── ...
-├── fastfood/
+├── restaurant/
 ├── market/
 ├── museum/
 └── village/
@@ -53,7 +53,7 @@ dataset/
 
 ---
 
-### Unity Export
+### ObjChangeVR-Dataset Generation
 
 Unity scripts are located in:
 
@@ -61,7 +61,7 @@ Unity scripts are located in:
 dataset_construction/export_unity/
 ```
 
-#### Scripts
+#### C# Scripts
 
 - `CameraPathRecorder.cs`  
   Records camera trajectories and screenshots.
@@ -91,56 +91,29 @@ Generate QA pairs using VLM:
 python dataset_construction/generate_qa.py
 ```
 
-**Input**
-- Screenshot images from `groundtruth/after/` and `screenshot/after/`
-
-**Output**
-- `generated_QA.csv`
+The dataset includes egocentric frames stored in the `groundtruth/after/` and `screenshot/after/` directories, along with generated question–answer pairs (`generated_QA.csv`) generated from these frames.
 
 ---
 
-## ObjChangeVR Method Pipeline
+## ObjChangeVR Pipeline
 
-The core pipeline is implemented in:
+The pipeline is implemented in:
 
 ```
-method/method.py
+python method/method.py
 ```
 
-### Output
-
-For each trajectory:
-- `results.csv` containing:
-  - `GeneratedAnswer`
-  - `Sub_Answers`
-  - `RetrievedIndices`
-
----
+For each trajectory, a `results.csv` file is provided. This file records the final generated answer (`GeneratedAnswer`), the intermediate intermediate answers produced during reasoning (`Sub_Answers`), and the indices of retrieved frames used to generate the answer (`RetrievedIndices`).
 
 ## Evaluation
 
 Evaluation code is provided in:
 
 ```
-method/evaluation.py
+python method/evaluation.py
 ```
 
-### Metrics
-
-- Strict Exact Match (EM)
-- EM@τ (τ = 0.8 by default)
-- Class-level F1 score:
-  - `disappeared`
-  - `never`
-  - `always been there`
-
-### Output
-
-- Excel summary file
-- Group-level statistics:
-  - Short scenes
-  - Long scenes
-  - Overall average
+We evaluate the model using Strict Exact Match (EM), EM@τ (τ = 0.8 by default), and class-level F1 scores (with the `disappeared`, `never`, and `always been there` categories). Evaluation results are reported for scenes with shorter trajectories, scenes with longer trajectories, and for all trajectories combined.
 
 ---
 
@@ -157,3 +130,10 @@ If you use ObjChangeVR in academic work, please cite:
 }
 ```
 ---
+
+## Acknowledgments
+The authors of this repository are Shiyi Ding and Ying Chen. Contact information is as follows:
+* [Shiyi Ding](https://www.linkedin.com/in/shiyi-ding-120900325/) (shiyiddd@gmail.com)
+* [Ying Chen](https://yingchen115.github.io/bio/) (yingchen@psu.edu)
+
+This work was supported in part by NSF grant No. 2550742.
