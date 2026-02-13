@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Rendering;
 using System.Collections;
 using System.Collections.Generic;
@@ -46,6 +46,7 @@ public class CameraPathPlayer : MonoBehaviour
     private ConcurrentQueue<string> csvQueue = new ConcurrentQueue<string>();
     private Coroutine csvWriterCo;
     private bool stopCsvWriter = false;
+    private bool isGroundTruthRun = false;
 
 
     void Start()
@@ -138,16 +139,28 @@ public class CameraPathPlayer : MonoBehaviour
                                  (Directory.GetFiles(screenshotPath, "*.png").Length > 0 ||
                                   Directory.GetFiles(screenshotPath, "*.csv").Length > 0);
 
-        currentFolder = screenshotExists ? groundtruthPath : screenshotPath;
+        isGroundTruthRun = screenshotExists;
+        currentFolder = isGroundTruthRun ? groundtruthPath : screenshotPath;
+
         beforeFolder = Path.Combine(currentFolder, "before");
         afterFolder = Path.Combine(currentFolder, "after");
         Directory.CreateDirectory(beforeFolder);
         Directory.CreateDirectory(afterFolder);
 
         csvFilePath = Path.Combine(currentFolder, "data.csv");
+
         if (!File.Exists(csvFilePath))
         {
-            File.WriteAllText(csvFilePath, "Index,Timestamp,ScreenshotFilename,Position,Rotation,IsDisappear\n");
+            if (isGroundTruthRun)
+            {
+                File.WriteAllText(csvFilePath,
+                    "Index,Timestamp,ScreenshotFilename,Position,Rotation,IsDisappear\n");
+            }
+            else
+            {
+                File.WriteAllText(csvFilePath,
+                    "Index,Timestamp,ScreenshotFilename,Position,Rotation\n");
+            }
         }
 
         lock (csvOpenLock)
@@ -329,10 +342,22 @@ public class CameraPathPlayer : MonoBehaviour
         string rotStr = $"({rot.x:F2},{rot.y:F2},{rot.z:F2},{rot.w:F2})";
         int isDisappear = isAfterPhase ? 1 : 0;
 
-        string line = string.Format("{0},{1},{2},\"{3}\",\"{4}\",{5}",
-            screenshotIndex, timestamp, filename, posStr, rotStr, isDisappear);
-        
+        string line;
+
+        if (isGroundTruthRun)
+        {
+            int isDisappear = isAfterPhase ? 1 : 0;
+            line = string.Format("{0},{1},{2},\"{3}\",\"{4}\",{5}",
+                screenshotIndex, timestamp, filename, posStr, rotStr, isDisappear);
+        }
+        else
+        {
+            line = string.Format("{0},{1},{2},\"{3}\",\"{4}\"",
+                screenshotIndex, timestamp, filename, posStr, rotStr);
+        }
+
         csvQueue.Enqueue(line);
+
         screenshotIndex++;
 
         Destroy(screenShot);
