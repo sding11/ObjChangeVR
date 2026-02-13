@@ -103,7 +103,7 @@ The pipeline is implemented in:
 python method/method.py
 ```
 
-For each trajectory, a `results.csv` file is provided. This file records the final generated answer (`GeneratedAnswer`), the intermediate intermediate answers produced during reasoning (`Sub_Answers`), and the indices of retrieved frames used to generate the answer (`RetrievedIndices`).
+For each trajectory, a `results.csv` file is provided. This file records the final generated answer (`GeneratedAnswer`), the intermediate answers produced during reasoning (`Sub_Answers`), and the indices of retrieved frames used to generate the answer (`RetrievedIndices`).
 
 ## Evaluation
 
