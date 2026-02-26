@@ -248,7 +248,10 @@ def generate_rag_results_for_folder(folder_path, gpt, qa_df):
         idx = int(row["Index"])
         pos = parse_position(row["Position"])
         rot = parse_rotation(row["Rotation"])
-        raw_path = os.path.join(screenshot_path, img_file)
+        #raw_path = os.path.join(screenshot_path, img_file)
+        before_path = os.path.join(screenshot_path, "before", img_file)
+        after_path = os.path.join(screenshot_path, "after", img_file)
+        raw_path = before_path if os.path.exists(before_path) else after_path
         compressed_img_name = os.path.splitext(img_file)[0] + "_compressed.jpg"
         compressed_path_full = os.path.join(compressed_path, compressed_img_name)
 
