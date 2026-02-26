@@ -7,9 +7,9 @@ from typing import List, Dict, Tuple
 # ================== Configuration ==================
 DATA_ROOT = "./dataset"
 TARGET_FILENAME = "results.csv"   
-SCENE_TYPES = ["market", "fastfood", "architecture", "museum", "village"]
+SCENE_TYPES = ["market", "restaurant", "villaInterior", "museum", "village"]
 
-GROUP_MAP = { "market":"Short", "fastfood":"Short", "architecture":"Short",
+GROUP_MAP = { "market":"Short", "restaurant":"Short", "villaInterior":"Short",
               "museum":"Long", "village":"Long" }
 
 TAU = 0.80                            # Threshold for EM@τ

@@ -374,7 +374,7 @@ def run_all_rag(base_dir):
 def run_all_domains(dataset_root="./dataset", domains=None):
     """Run RAG pipeline across multiple domains."""
     if domains is None:
-        domains = ["architecture", "fastfood", "market", "museum", "village"]
+        domains = ["villaInterior", "restaurant", "market", "museum", "village"]
     for name in domains:
         base_dir = os.path.join(dataset_root, name)
         if not os.path.isdir(base_dir):
@@ -387,5 +387,5 @@ def run_all_domains(dataset_root="./dataset", domains=None):
 if __name__ == "__main__":
     run_all_domains(
         dataset_root="./dataset",
-        domains=["architecture", "fastfood", "market", "museum", "village"]
+        domains=["villaInterior", "restaurant", "market", "museum", "village"]
     )
