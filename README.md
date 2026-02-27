@@ -10,37 +10,27 @@ This repository accompanies the paper **“ObjChangeVR: Object State Change Reas
 
 
 * [I. ObjChangeVR-Dataset](#1)
+* [II. ObjChangeVR-Dataset Generation](#2)
+* [III. ObjChangeVR Pipeline](#3)
+* [IV. Evaluation](#4)
   
-  Unity-based data export and QA benchmark generation.
+## I. ObjChangeVR-Dataset <span id="1">
 
-- `method/`  
-  Core ObjChangeVR pipeline and evaluation code.
+The dataset can be downloaded [**here**](https://pennstateoffice365-my.sharepoint.com/:u:/g/personal/yfc5578_psu_edu/IQB7trduxN_rT4sHdsU-EyoFAVKw1kG8nTksqoLPlq7eMfw?e=Ajwakl)
 
----
-
-
-## ObjChangeVR-Dataset <span id="1">
-
-The dataset can be downloaded [**here**]()
-
-All code assumes the following **dataset layout**:
+The **dataset layout** is as follows:
 
 ```
 dataset/
 ├── villaInterior/
+│   ├── generated_QA.csv
 │   ├── 1/
-│   │   ├── compressed/
 │   │   ├── disappear_object/
 │   │   ├── path/
 │   │   ├── screenshot/
 │   │   │   ├── data.csv
 │   │   │   ├── after/
-│   │   │   ├── before/
-│   │   │   └── compressed/
-│   │   ├── groundtruth/
-│   │   │   ├── data.csv
-│   │   │   ├── before/
-│   │   └── └── after/
+│   │   │   └── before/
 │   ├── 2/
 │   └── ...
 ├── restaurant/
@@ -49,53 +39,73 @@ dataset/
 └── village/
 ```
 
-- Each **numeric folder** represents a **single independent trajectory**.
+Each numeric folder represents a single independent trajectory. `screenshot/before/` stores images captured before object disappearance. `screenshot/after/` stores images captured after object disappearance.
 
 ---
 
-### ObjChangeVR-Dataset Generation
+## II. ObjChangeVR-Dataset Generation <span id="2">
 
-Unity scripts are located in:
+Due to licensing restrictions (the scenes used for testing are purchased from the Unity Asset Store and cannot be redistributed), this repository contains only the C# and Python scripts used to generate the dataset, not the complete Unity scenes. 
 
-```
-dataset_construction/export_unity/
-```
+The C# scripts Unity scripts are located in `dataset_construction/export_unity/`. They are tested in Unity 2022.3.52f1.
 
-#### C# Scripts
+### Unity Project Setup
 
-- `CameraPathRecorder.cs`  
-  Records camera trajectories and screenshots.
+#### Recording Mode Setup
 
-- `CameraPathPlayer.cs`  
-  Replays recorded camera trajectories.
+1. In Unity, open or import a scene to work with. For example, [Villa Inteorior](https://assetstore.unity.com/packages/3d/environments/urban/archvizpro-interior-vol-6-urp-274067), [Restaurant](https://assetstore.unity.com/packages/essentials/tutorial-projects/fast-food-restaurant-kit-239419), [Market](https://assetstore.unity.com/packages/3d/environments/low-poly-medieval-market-262473), [Museum](https://assetstore.unity.com/packages/3d/environments/historic/historical-museum-251130), and [Viking Village](https://assetstore.unity.com/packages/essentials/tutorial-projects/viking-village-29140).
+2. Create or select your camera GameObject in the Unity Hierarchy.
+3. Attach scripts to the camera GameObject:
+   - `FlyCamera.cs`
+   - `CameraPathRecorder.cs`
+4. Configure CameraPathRecorder in the Inspector:
+   - Camera Transform: Drag your camera's Transform here.
+   - Record Interval: Time between recordings (default: 0.2s).
+   - Save File Name: Output filename (default: "camera_path.json").
+5. Enter Play Mode and fly around your scene using the controls.
+6. Exit Play Mode and the path will be automatically saved.
 
-- `FlyCamera.cs`  
-  Provides free camera control (recording only).
+#### Playback Mode Setup
 
-#### Installation Rules
+1. Remove or disable `FlyCamera.cs` and `CameraPathRecorder.cs`.
+2. Attach `CameraPathPlayer.cs` to the camera GameObject.
+3. Configure CameraPathPlayer in the Inspector:
+   - Camera Transform: Drag your camera's Transform here.
+   - Playback Camera: Drag your Camera component here.
+   - Load File Name: Path to load (default: "camera_path.json").
+   - Capture Every N Frames: Screenshot frequency (default: 2).
+   - Num To Disappear: Number of objects to hide (default: 250).
+   - Disappear Duration: Time before objects reappear (default: 1000s).
+   - Trigger At Fraction: When to trigger disappearance (default: 0.6 = 60% through path).
+4. Tag objects you want to disappear with the tag `"disappear"`.
+5. Enter Play Mode and playback will start automatically.
 
-- `CameraPathRecorder.cs` and `CameraPathPlayer.cs` are **mutually exclusive**.  
-  **Only one may be active per Unity scene/session.**
+#### Output Data
 
-- `FlyCamera.cs` **must be attached together with** `CameraPathRecorder.cs`.
+1. CSV file. Each run generates a data.csv file containing the index (screenshot number), timestamp (capture time), screenshot filename (PNG file), position (camera x, y, z coordinates), rotation (camera quaternion), and for ground truth runs only, an IsDisappear flag (0 for before disappearance, 1 for after).
 
-- `CameraPathPlayer.cs` does **not** require `FlyCamera.cs`.
+2. JSON files
+   - `camera_path.json`: Array of camera poses
+   - `disappear_*.json`: Record of which objects disappeared and when
 
----
+3. Images.
+The system requires two playback runs (in **Playback Mode**) to create paired image datasets. The first run saves screenshots to `record/screenshot/` where objects disappear partway through. The second run saves screenshots to `record/groundtruth/` where all objects remain visible throughout the entire path. Both runs follow the exact same camera path, so each screenshot from the first run has a matching screenshot from the second run taken from the identical position. This creates paired datasets where you can compare images with objects missing (from run 1) against images with all objects present (from run 2) at the same camera positions.
 
-### QA Benchmark Generation
+#### QA Benchmark Generation
 
-Generate QA pairs using VLM:
+Generate QA pairs using:
 
 ```bash
 python dataset_construction/generate_qa.py
 ```
 
-The dataset includes egocentric frames stored in the `groundtruth/after/` and `screenshot/after/` directories, along with generated question–answer pairs (`generated_QA.csv`) generated from these frames.
+This takes in egocentric frames stored in the `groundtruth/after/` and `screenshot/after/` directories, to generated question–answer pairs (`generated_QA.csv`) from these frames.
 
 ---
 
-## ObjChangeVR Pipeline
+## III. ObjChangeVR Pipeline <span id="3">
+
+*Dependencies:* `pandas`, `numpy`, `Pillow`, `openai`.
 
 The pipeline is implemented in:
 
@@ -103,9 +113,11 @@ The pipeline is implemented in:
 python method/method.py
 ```
 
-For each trajectory, a `results.csv` file is provided. This file records the final generated answer (`GeneratedAnswer`), the intermediate answers produced during reasoning (`Sub_Answers`), and the indices of retrieved frames used to generate the answer (`RetrievedIndices`).
+For each trajectory, a `results.csv` file is provided. This file records the final generated answer (`GeneratedAnswer`), the ground-truth answer (`answer`), the intermediate answers produced during reasoning (`Sub_Answers`), and the indices of retrieved frames used to generate the answer (`RetrievedIndices`).
 
-## Evaluation
+## IV. Evaluation <span id="4">
+
+*Dependencies*: `pandas`, `openpyxl`.
 
 Evaluation code is provided in:
 
@@ -137,3 +149,4 @@ The authors of this repository are Shiyi Ding and Ying Chen. Contact information
 * [Ying Chen](https://yingchen115.github.io/bio/) (yingchen@psu.edu)
 
 This work was supported in part by NSF grant No. 2550742.
+
