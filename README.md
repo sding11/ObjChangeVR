@@ -16,7 +16,7 @@ This repository accompanies the paper **“ObjChangeVR: Object State Change Reas
   
 ## I. ObjChangeVR-Dataset <span id="1">
 
-The dataset can be downloaded [**here**](https://pennstateoffice365-my.sharepoint.com/:u:/g/personal/yfc5578_psu_edu/IQB7trduxN_rT4sHdsU-EyoFAVKw1kG8nTksqoLPlq7eMfw?e=Ajwakl)
+The dataset can be downloaded [**here**](https://pennstateoffice365-my.sharepoint.com/:u:/g/personal/yfc5578_psu_edu/IQB7trduxN_rT4sHdsU-EyoFAVKw1kG8nTksqoLPlq7eMfw?e=Ajwakl).
 
 The **dataset layout** is as follows:
 
